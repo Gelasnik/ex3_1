@@ -46,5 +46,4 @@ public:
             Vehicle(vehicleLicensePlate, vehicleEnterTime, HANDICAPPED){}
 
 };
-//new row
-
+//OMGOMG
