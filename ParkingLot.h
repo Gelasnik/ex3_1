@@ -4,13 +4,21 @@
 #include "ParkingLotTypes.h"
 #include "Time.h"
 #include "ParkingSpot.h"
-
+#include "UniqueArray.h"
 namespace MtmParkingLot {
 
     using namespace ParkingLotUtils;
     using std::ostream;
 
     class ParkingLot {
+
+        class Motorbike;
+        class Car;
+        class Handicapped;
+        UniqueArray<Motorbike> motorbikeParking;
+        UniqueArray<Car> carParking;
+        UniqueArray<Handicapped> handicappedParking;
+
     public:
 
         ParkingLot(unsigned int parkingBlockSizes[]);
