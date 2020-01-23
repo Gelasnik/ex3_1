@@ -12,6 +12,7 @@ namespace MtmParkingLot {
 
     class ParkingLot {
 
+        class Vehicle;
         class Motorbike;
         class Car;
         class Handicapped;
