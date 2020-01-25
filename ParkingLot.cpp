@@ -30,6 +30,8 @@ public:
         Vehicle(const Vehicle& vehicle) = default;
         friend ParkingLot::Compare;
 };
+
+
 class ParkingLot::Compare{
 public:
     Compare()= default;
@@ -286,6 +288,111 @@ Time1 time=Time1();
 
     return vehicle;
 }
+
+
+void MtmParkingLot::ParkingLot::inspectParkingLot(Time1 inspectionTime) {
+
+    UniqueArray<Motorbike,Compare>::MyIterator mottoIter(motorbikeParking);
+    unsigned int i=0;
+
+    while(i<motorbikeParking.getSize()){
+        if ((**mottoIter)==NULL) {
+            mottoIter++;
+            i++;
+            continue;
+        }
+        Motorbike* motto = **mottoIter;
+        if(inspectionTime.toHours()-motto->enterTime.toHours()) motto->gotFine=true;
+
+
+
+        mottoIter++;
+        i++;
+    }
+    i=0;
+    UniqueArray<Car,Compare>::MyIterator carIter(carParking);
+    while(i<carParking.getSize()){
+        if (**carIter==NULL) {
+            carIter++;
+            i++;
+            continue;
+        }
+        Car* car = **carIter;
+        if(inspectionTime.toHours()-car->enterTime.toHours()) car->gotFine=true;
+
+
+        carIter++;
+        i++;
+    }
+    i=0;
+    UniqueArray<Handicapped,Compare>::MyIterator handicapIter(handicappedParking);
+    while(i<handicappedParking.getSize()){
+        if (**handicapIter==NULL) {
+            handicapIter++;
+            i++;
+            continue;
+        }
+        Handicapped* handicapped = **handicapIter;
+        if(inspectionTime.toHours()-handicapped->enterTime.toHours()) handicapped->gotFine=true;
+
+        handicapIter++;
+        i++;
+    }
+
+
+}
+
+
+
+/*void MtmParkingLot::ParkingLot::printParkingLot(Time1 inspectionTime) {
+
+    UniqueArray<Motorbike,Compare>::MyIterator mottoIter(motorbikeParking);
+    unsigned int i=0;
+
+    while(i<motorbikeParking.getSize()){
+        if ((**mottoIter)==NULL) {
+            mottoIter++;
+            i++;
+            continue;
+        }
+        Motorbike* motto = **mottoIter;
+        cout<<motto->gotFine<<endl;
+        mottoIter++;
+        i++;
+    }
+    i=0;
+    UniqueArray<Car,Compare>::MyIterator carIter(carParking);
+    while(i<carParking.getSize()){
+        if (**carIter==NULL) {
+            carIter++;
+            i++;
+            continue;
+        }
+        Car* car = **carIter;
+        cout<<car->gotFine<<endl;
+
+        carIter++;
+        i++;
+    }
+    i=0;
+    UniqueArray<Handicapped,Compare>::MyIterator handicapIter(handicappedParking);
+    while(i<handicappedParking.getSize()){
+        if (**handicapIter==NULL) {
+            handicapIter++;
+            i++;
+            continue;
+        }
+        Handicapped* handicapped = **handicapIter;
+        cout<<handicapped->gotFine<<endl;
+
+        handicapIter++;
+        i++;
+    }
+
+
+}*/
+
+
 
 
 

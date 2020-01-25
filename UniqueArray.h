@@ -10,7 +10,7 @@ class UniqueArray {
     const unsigned int maxSize;
     bool findCellWithElement( unsigned int& index , const Element* elementPtr )const;//return true if found empty cell, false otherwise
     unsigned int elementCounter;
-    Element const** arrayOfElements;
+    Element ** arrayOfElements;
 
 public:
 
@@ -35,6 +35,20 @@ public:
     UniqueArray filter(const Filter& f) const;
 
     class UniqueArrayIsFullException{};
+
+
+    class MyIterator : public std::iterator<std::input_iterator_tag, int>
+    {
+        Element** p;
+    public:
+        MyIterator(UniqueArray& x) :p(x.arrayOfElements) {}
+        MyIterator(const MyIterator& mit) : p(mit.p) {}
+        MyIterator& operator++() {++p;return *this;}
+        MyIterator operator++(int) {MyIterator tmp(*this); operator++(); return tmp;}
+        bool operator==(const MyIterator& rhs) const {return p==rhs.p;}
+        bool operator!=(const MyIterator& rhs) const {return p !=rhs.p;}
+        Element** operator*() {return p;}
+    };
     
 };
 

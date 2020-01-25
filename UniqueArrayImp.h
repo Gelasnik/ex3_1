@@ -6,7 +6,7 @@
 template <class Element, class Compare>
     UniqueArray<Element, Compare>::UniqueArray(unsigned int size):
             maxSize(size), elementCounter(0)  {
-     arrayOfElements = new const Element*[maxSize];
+     arrayOfElements = new Element*[maxSize];
     for(unsigned int i = 0; i<size; i++){
         arrayOfElements[i] = NULL;
     }
@@ -138,6 +138,7 @@ UniqueArray<Element,Compare> UniqueArray<Element,Compare>::filter(const Filter& 
 
     return newUniqueArray;
 }
+
 
 
 
