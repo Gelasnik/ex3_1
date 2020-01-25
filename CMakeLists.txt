@@ -21,4 +21,4 @@ add_executable(ex3
         UniqueArray.h
         UniqueArrayImp.h
 
-        )
+        Vehicle.cpp Vehicle.h)

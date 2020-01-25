@@ -1,12 +1,16 @@
 #ifndef MTMPARKINGLOT_PARKINGLOT_H
 #define MTMPARKINGLOT_PARKINGLOT_H
 
+
 #include "ParkingLotTypes.h"
 #include "Time1.h"
 #include "ParkingSpot.h"
 #include "UniqueArray.h"
+#include "Vehicle.h"
+
 namespace MtmParkingLot {
 
+/*
     typedef unsigned int cash;
 
     const cash FINE_PRICE = 250;
@@ -17,25 +21,22 @@ namespace MtmParkingLot {
     const cash CAR_FIRST_HOUR_PRICE = 20;
     const cash CAR_EXTRA_HOUR_PRICE = 10;
     const cash HANDICAPPED_CONSTANT_PRICE = 15;
+*/
+
 
     using namespace ParkingLotUtils;
     using std::ostream;
 
     class ParkingLot {
 
-        class Vehicle;
-        class Motorbike;
-        class Car;
-        class Handicapped;
-        class Compare;
 
 
-        UniqueArray<Motorbike, Compare> motorbikeParking;
-        UniqueArray<Car, Compare> carParking;
-        UniqueArray<Handicapped, Compare> handicappedParking;
-        bool vehicleIsInParking(const ParkingLot::Vehicle& vehicle) const ;
-        const Vehicle *findVehicle(LicensePlate& basicString);
-        friend ostream& operator<<(ostream& os, const ParkingLot::Vehicle& vehicle);
+         UniqueArray<Motorbike, Vehicle::Compare> motorbikeParking;
+         UniqueArray<Car, Vehicle::Compare> carParking;
+        UniqueArray<Handicapped, Vehicle::Compare> handicappedParking;
+        bool vehicleIsInParking(const Vehicle& vehicle) const ;
+        friend ostream& operator<<(ostream& os, const Vehicle& vehicle);
+        const Vehicle *findVehicle(LicensePlate& licensePlate);
     public:
 
         ParkingLot(unsigned int parkingBlockSizes[]);
@@ -44,7 +45,7 @@ namespace MtmParkingLot {
         ParkingResult exitParking(LicensePlate licensePlate, Time1 exitTime);
         ParkingResult getParkingSpot(LicensePlate licensePlate, ParkingSpot& parkingSpot) const;
         void inspectParkingLot(Time1 inspectionTime);
-        friend ostream& operator<<(ostream& os, const ParkingLot& parkingLot);
+        //friend ostream& operator<<(ostream& os, const ParkingLot& parkingLot);
 
 
 

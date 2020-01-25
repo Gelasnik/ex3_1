@@ -70,7 +70,11 @@ static void processEnterCmd(istream& inputStream, ParkingLot& parkingLot, Time1&
     }
 }
 
-
+static void processExitCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
+    LicensePlate inputLicensePlate;
+    inputStream >> inputLicensePlate;
+    parkingLot.exitParking(inputLicensePlate, currentTime);
+}
 
 
 
@@ -85,15 +89,17 @@ static void processPassCmd(istream& inputStream, ParkingLot& parkingLot, Time1& 
     cout << "Current time: " << currentTime << endl;
 }
 
-
+static void processInspectCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
+    parkingLot.inspectParkingLot(currentTime);
+}
 
 static void processInput(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
     typedef void (*CmdFunction)(istream&, ParkingLot&, Time1&);
     static map<string, CmdFunction> cmdMap = {{"ENTER", processEnterCmd},
-
+                                              {"EXIT", processExitCmd},
 
                                               {"PASS_TIME", processPassCmd},
-                                             };
+                                              {"INSPECT", processInspectCmd}};
     cout << "Enter commands:" << endl;
     string cmd;
     while (inputStream >> cmd) {

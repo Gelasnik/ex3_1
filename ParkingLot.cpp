@@ -4,14 +4,14 @@ using namespace MtmParkingLot;
 using namespace std;
 
 
-typedef VehicleType Parking;
 typedef unsigned int ID;
-typedef unsigned int Hour;
+
 inline void printEntryFail(Parking parking, ID index);
 inline void printEntrySuccess(VehicleType vehicleType, ID index, LicensePlate& licensePlate, Time1 entranceTime, Parking parking);
 
 
 
+/*
 class ParkingLot::Vehicle{
 
 
@@ -28,6 +28,7 @@ public:
         Vehicle(LicensePlate &vehicleLicensePlate, Time1 vehicleEnterTime, Parking vehicleParking, VehicleType vehicleType):
         licensePlate(vehicleLicensePlate), enterTime(vehicleEnterTime), type(vehicleType), parking(vehicleParking),  gotFine(false){}
         Vehicle(const Vehicle& vehicle) = default;
+        ~Vehicle()= default;
         friend ParkingLot::Compare;
 };
 
@@ -38,6 +39,7 @@ public:
     bool operator()(const ParkingLot::Vehicle& vehicle1, const Vehicle& vehicle2){
         return vehicle1.licensePlate == vehicle2.licensePlate;
     }
+    ~Compare()= default;
 };
 
 class ParkingLot::Motorbike: public Vehicle{
@@ -45,14 +47,12 @@ class ParkingLot::Motorbike: public Vehicle{
 public:
     Motorbike(const Motorbike& motorbike)= default;
     explicit Motorbike(const Vehicle &vehicle) : Vehicle(vehicle){} ;
-
+    ~Motorbike()= default;
     Motorbike(LicensePlate &vehicleLicensePlate, Time1 vehicleEnterTime):
             Vehicle(vehicleLicensePlate, vehicleEnterTime,  MOTORBIKE, MOTORBIKE){
     }
 
 };
-
-
 
 class ParkingLot::Car: public Vehicle{
     cash parkingPrice(Time1 exitTime) const  override ;
@@ -62,6 +62,7 @@ public:
             Vehicle(vehicleLicensePlate, vehicleEnterTime, parking, type){
         //if((type == CAR && parking == HANDICAPPED) || parking == MOTORBIKE) throw;
     }
+    ~Car()= default;
 
 };
 class ParkingLot::Handicapped: public Car{
@@ -72,8 +73,9 @@ public:
             Car(vehicleLicensePlate, vehicleEnterTime, parking, HANDICAPPED){
         //if(parking==MOTORBIKE) throw;
     }
-
+    ~Handicapped()= default;
 };
+*/
 
 ParkingLot::ParkingLot(unsigned int *parkingBlockSizes):
 motorbikeParking(parkingBlockSizes[0]), handicappedParking(parkingBlockSizes[1]), carParking(parkingBlockSizes[2]){}
@@ -95,7 +97,7 @@ ParkingResult ParkingLot::enterParking(VehicleType vehicleType,
                 index = motorbikeParking.insert(newMotorbike);
                 printEntrySuccess(MOTORBIKE, index, licensePlate, entranceTime, MOTORBIKE);
                 return SUCCESS;
-            }catch (const UniqueArray<Motorbike, Compare>::UniqueArrayIsFullException& e){
+            }catch (const UniqueArray<Motorbike, Vehicle::Compare>::UniqueArrayIsFullException& e){
                     ParkingLotPrinter::printEntryFailureNoSpot(cout);
                     return NO_EMPTY_SPOT;
             }
@@ -110,7 +112,7 @@ ParkingResult ParkingLot::enterParking(VehicleType vehicleType,
                 index = carParking.insert(newCar);
                 printEntrySuccess(CAR, index, licensePlate, entranceTime, CAR);
                 return SUCCESS;
-               }catch (const UniqueArray<Car, Compare>::UniqueArrayIsFullException& e){
+               }catch (const UniqueArray<Car, Vehicle::Compare>::UniqueArrayIsFullException& e){
                 ParkingLotPrinter::printEntryFailureNoSpot(cout);
                 return NO_EMPTY_SPOT;
             }
@@ -126,12 +128,12 @@ ParkingResult ParkingLot::enterParking(VehicleType vehicleType,
                 printEntrySuccess(HANDICAPPED, index, licensePlate, entranceTime, HANDICAPPED);
                 return SUCCESS;
 
-            }catch (const UniqueArray<Handicapped, Compare>::UniqueArrayIsFullException& e){}
+            }catch (const UniqueArray<Handicapped, Vehicle::Compare>::UniqueArrayIsFullException& e){}
             try{
                 index = carParking.insert(newHandicapped);
                 printEntrySuccess(HANDICAPPED, index, licensePlate, entranceTime, CAR);
                 return SUCCESS;
-            }catch (const UniqueArray<Car, Compare>::UniqueArrayIsFullException& e){
+            }catch (const UniqueArray<Car, Vehicle::Compare>::UniqueArrayIsFullException& e){
                 ParkingLotPrinter::printEntryFailureNoSpot(cout);
                 return NO_EMPTY_SPOT;
             }
@@ -171,10 +173,8 @@ inline void printEntrySuccess(VehicleType vehicleType, ID index, LicensePlate& l
 
 
 
-ostream& MtmParkingLot::operator<<(ostream& os, const ParkingLot::Vehicle& vehicle) {
-    return ParkingLotPrinter::printVehicle(os,vehicle.type,vehicle.licensePlate,
-                                          vehicle.enterTime);
-}
+
+/*
 
 cash ParkingLot::Motorbike::parkingPrice(Time1 exitTime) const {
     Hour parkingTime = (exitTime - (*this).enterTime).toHours();
@@ -182,7 +182,9 @@ cash ParkingLot::Motorbike::parkingPrice(Time1 exitTime) const {
         return 0;
     }
     cash price = MOTORBIKE_FIRST_HOUR_PRICE;
-    if (parkingTime <= MOTORBIKE_MAX_HOURS_TO_PAY) { /* Without fine.*/
+    if (parkingTime <= MOTORBIKE_MAX_HOURS_TO_PAY) {
+ Without fine.
+
         return price += MOTORBIKE_EXTRA_HOUR_PRICE*( parkingTime - 1);
     }
     price += MOTORBIKE_EXTRA_HOUR_PRICE * (MOTORBIKE_MAX_HOURS_TO_PAY - 1);
@@ -217,6 +219,7 @@ cash ParkingLot::Handicapped::parkingPrice(Time1 exitTime) const{
 }
 
 
+*/
 
 
 ParkingResult ParkingLot::exitParking(LicensePlate licensePlate,
@@ -274,8 +277,72 @@ ParkingResult ParkingLot::getParkingSpot(LicensePlate licensePlate,
     return SUCCESS;
 }
 
-const ParkingLot::Vehicle *MtmParkingLot::ParkingLot::findVehicle(LicensePlate& licensePlate){
-Time1 time=Time1();
+
+
+void MtmParkingLot::ParkingLot::inspectParkingLot(Time1 inspectionTime) {
+    UniqueArray<Motorbike, Vehicle::Compare>::MyIterator mottoIter(motorbikeParking);
+    unsigned int i=0;
+    unsigned int numFined =0;
+    while(i<motorbikeParking.getSize()){
+        if ((**mottoIter)==NULL) {
+            mottoIter++;
+            i++;
+            continue;
+        }
+        Motorbike* motto = **mottoIter;
+        if(inspectionTime.toHours()-motto->enterTime1.toHours()>24) {
+            motto->gotFine=true;
+            numFined++;
+        }
+        mottoIter++;
+        i++;
+    }
+    i=0;
+    UniqueArray<Car,Vehicle::Compare>::MyIterator carIter(carParking);
+    while(i<carParking.getSize()){
+        if (**carIter==NULL) {
+            carIter++;
+            i++;
+            continue;
+        }
+        Car* car = **carIter;
+        if(inspectionTime.toHours()-car->enterTime1.toHours()>24) {
+            car->gotFine=true;
+            numFined++;
+        }
+        carIter++;
+        i++;
+    }
+    i=0;
+    UniqueArray<Handicapped,Vehicle::Compare>::MyIterator handicapIter(handicappedParking);
+    while(i<handicappedParking.getSize()){
+        if (**handicapIter==NULL) {
+            handicapIter++;
+            i++;
+            continue;
+        }
+        Handicapped* handicapped = **handicapIter;
+        if(inspectionTime.toHours()-handicapped->enterTime1.toHours()>24) {
+            handicapped->gotFine=true;
+            numFined++;
+        }
+        handicapIter++;
+        i++;
+    }
+
+    ParkingLotPrinter::printInspectionResult(cout,inspectionTime,numFined);
+}
+
+
+
+
+
+ostream& operator<<(ostream& os, const Vehicle& vehicle) {
+    return ParkingLotPrinter::printVehicle(os,vehicle.type,vehicle.licensePlate,
+                                           vehicle.enterTime1);
+}
+const Vehicle* ParkingLot::findVehicle(LicensePlate& licensePlate)  {
+    Time1 time=Time1();
     Motorbike m(licensePlate,time );
     Handicapped h(licensePlate, time, HANDICAPPED);
     const Vehicle *vehicle = motorbikeParking[m];
@@ -288,61 +355,6 @@ Time1 time=Time1();
 
     return vehicle;
 }
-
-
-void MtmParkingLot::ParkingLot::inspectParkingLot(Time1 inspectionTime) {
-
-    UniqueArray<Motorbike,Compare>::MyIterator mottoIter(motorbikeParking);
-    unsigned int i=0;
-
-    while(i<motorbikeParking.getSize()){
-        if ((**mottoIter)==NULL) {
-            mottoIter++;
-            i++;
-            continue;
-        }
-        Motorbike* motto = **mottoIter;
-        if(inspectionTime.toHours()-motto->enterTime.toHours()) motto->gotFine=true;
-
-
-
-        mottoIter++;
-        i++;
-    }
-    i=0;
-    UniqueArray<Car,Compare>::MyIterator carIter(carParking);
-    while(i<carParking.getSize()){
-        if (**carIter==NULL) {
-            carIter++;
-            i++;
-            continue;
-        }
-        Car* car = **carIter;
-        if(inspectionTime.toHours()-car->enterTime.toHours()) car->gotFine=true;
-
-
-        carIter++;
-        i++;
-    }
-    i=0;
-    UniqueArray<Handicapped,Compare>::MyIterator handicapIter(handicappedParking);
-    while(i<handicappedParking.getSize()){
-        if (**handicapIter==NULL) {
-            handicapIter++;
-            i++;
-            continue;
-        }
-        Handicapped* handicapped = **handicapIter;
-        if(inspectionTime.toHours()-handicapped->enterTime.toHours()) handicapped->gotFine=true;
-
-        handicapIter++;
-        i++;
-    }
-
-
-}
-
-
 
 /*void MtmParkingLot::ParkingLot::printParkingLot(Time1 inspectionTime) {
 
