@@ -10,7 +10,7 @@ namespace ParkingLotUtils {
         return os << ", parked in: " << parkingSpot;
     }
 
-    ostream& ParkingLotPrinter::printVehicle(ostream &os, VehicleType vehicleType, LicensePlate licensePlate, Time entranceTime) {
+    ostream& ParkingLotPrinter::printVehicle(ostream &os, VehicleType vehicleType, LicensePlate licensePlate, Time1 entranceTime) {
         return os << "Vehicle Type: " << vehicleTypeToString(vehicleType) << ", License Plate: " << licensePlate << ", arrived on: " << entranceTime;
     }
 
@@ -28,7 +28,7 @@ namespace ParkingLotUtils {
         return printParkingSpot(os, parkingSpot);
     }
 
-    ostream& ParkingLotPrinter::printExitSuccess(ostream& os, ParkingSpot parkingSpot, Time exitTime, unsigned int price) {
+    ostream& ParkingLotPrinter::printExitSuccess(ostream& os, ParkingSpot parkingSpot, Time1 exitTime, unsigned int price) {
         printParkingSpotNoEndl(os, parkingSpot);
         return os << " has exited Parking Lot on: " << exitTime << ", Total price to pay: " << price << endl;
     }
@@ -37,7 +37,7 @@ namespace ParkingLotUtils {
         return os << "Error: Vehicle with License Plate: " << licensePlate << " not found!" << endl;
     }
 
-    ostream& ParkingLotPrinter::printInspectionResult(ostream& os, Time inspectionTime, unsigned int numFined) {
+    ostream& ParkingLotPrinter::printInspectionResult(ostream& os, Time1 inspectionTime, unsigned int numFined) {
         return os << "Parking lot was inspected on: " << inspectionTime << ". Total of " << numFined << " vehicles were fined." << endl;
     }
 

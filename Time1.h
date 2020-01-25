@@ -11,7 +11,7 @@ namespace ParkingLotUtils {
      * @brief Represents a Time object that includes Day, Hour and Minute.
      * 
      */
-    class Time {
+    class Time1 {
     public:
     
         typedef unsigned int Day;
@@ -26,7 +26,7 @@ namespace ParkingLotUtils {
          * @param minute The minute of the time. Must be <= 60.
          * @throw std::invalid_argument in case of invalid arguments.
          */
-        Time(Day day = 0, Hour hour = 0, Minute minute = 0);
+        Time1(Day day = 0, Hour hour = 0, Minute minute = 0);
 
         /**
          * @brief Adds the given number of minutes to this time object
@@ -34,7 +34,7 @@ namespace ParkingLotUtils {
          * @param minutes the number of minutes to add
          * @return Time& reference to this time object after the addition
          */
-        Time& operator+=(const Minute minutes);
+        Time1& operator+=(const Minute minutes);
 
         /**
          * @brief Calculates the time difference between this and given Time object
@@ -42,7 +42,7 @@ namespace ParkingLotUtils {
          * @param time Time object to calculate time difference against
          * @return Time Time object representing the difference between this and given Time object (in absolute value)
          */
-        Time operator-(const Time &time) const;
+        Time1 operator-(const Time1 &time) const;
 
         /**
          * @brief Converts this to number of hours (rounded up)
@@ -58,7 +58,7 @@ namespace ParkingLotUtils {
          * @param time Time object to print
          * @return ostream& output stream after the print
          */
-        friend ostream& operator<<(ostream &os, const Time &time);
+        friend ostream& operator<<(ostream &os, const Time1 &time);
 
     private:
 

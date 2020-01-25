@@ -2,6 +2,7 @@
 #define UNIQUEARRAY_H_UNIQUEARRAYIMP_H
 
 
+
 template <class Element, class Compare>
     UniqueArray<Element, Compare>::UniqueArray(unsigned int size):
             maxSize(size), elementCounter(0)  {
@@ -25,8 +26,11 @@ UniqueArray<Element,Compare>::UniqueArray(const UniqueArray& other) :
 
 
 template <class Element, class Compare>
-unsigned int UniqueArray<Element,Compare>::insert(const Element& element) {
+unsigned int UniqueArray<Element,Compare>::insert(const  Element& element) {//const MtmParkingLot::ParkingLot::Motorbike
     unsigned int index=0;
+
+    const Element test = element;
+
 
     if (getIndex(element,index)) { /* If the element is in the array.*/
         return index;
@@ -59,6 +63,7 @@ template <class Element, class Compare>
         }
 
         else if(arrayOfElements[i]!=NULL) {
+            Compare cmp;
             if(cmp(*arrayOfElements[i], *elementPtr))
             {
                 index = i;

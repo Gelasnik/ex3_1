@@ -7,8 +7,6 @@ class UniqueArray {
 
 
     const Element* const EMPTY_SLOT = NULL;
-
-    Compare cmp={};
     const unsigned int maxSize;
     bool findCellWithElement( unsigned int& index , const Element* elementPtr )const;//return true if found empty cell, false otherwise
     unsigned int elementCounter;
