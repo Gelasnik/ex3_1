@@ -34,8 +34,8 @@ namespace MtmParkingLot {
         UniqueArray<Car, Compare> carParking;
         UniqueArray<Handicapped, Compare> handicappedParking;
         bool vehicleIsInParking(const ParkingLot::Vehicle& vehicle) const ;
-        static const Vehicle *findVehicle(LicensePlate& basicString);
-        friend ostream& operator<<(ostream& os, const ParkingLot::Vehicle& vehicle) const;
+        const Vehicle *findVehicle(LicensePlate& basicString);
+        friend ostream& operator<<(ostream& os, const ParkingLot::Vehicle& vehicle);
     public:
 
         ParkingLot(unsigned int parkingBlockSizes[]);

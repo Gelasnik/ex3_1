@@ -42,7 +42,6 @@ class ParkingLot::Motorbike: public Vehicle{
     cash parkingPrice(Time1 exitTime) const override;
 public:
     Motorbike(const Motorbike& motorbike)= default;
-
     explicit Motorbike(const Vehicle &vehicle) : Vehicle(vehicle){} ;
 
     Motorbike(LicensePlate &vehicleLicensePlate, Time1 vehicleEnterTime):
@@ -274,10 +273,18 @@ ParkingResult ParkingLot::getParkingSpot(LicensePlate licensePlate,
 }
 
 const ParkingLot::Vehicle *MtmParkingLot::ParkingLot::findVehicle(LicensePlate& licensePlate){
+Time1 time=Time1();
+    Motorbike m(licensePlate,time );
+    Handicapped h(licensePlate, time, HANDICAPPED);
+    const Vehicle *vehicle = motorbikeParking[m];
+    if (vehicle == NULL){
+        vehicle = carParking[h];
+    } else return vehicle;
+    if (vehicle == NULL){
+        vehicle = handicappedParking[h];
+    } else return vehicle;
 
-
-
-    return nullptr;
+    return vehicle;
 }
 
 
