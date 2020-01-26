@@ -1,7 +1,7 @@
 #ifndef MTMPARKINGLOT_PARKINGLOTPRINTER_H
 #define MTMPARKINGLOT_PARKINGLOTPRINTER_H
 
-#include "Time.h"
+#include "Time1.h"
 #include "ParkingSpot.h"
 #include "ParkingLotTypes.h"
 #include <iostream>
@@ -23,7 +23,7 @@ namespace ParkingLotUtils {
          * @param entranceTime entrance time of the vehicle
          * @return ostream& output stream after the print
          */
-        static ostream& printVehicle(ostream& os, VehicleType vehicleType, LicensePlate licensePlate, Time entranceTime);
+        static ostream& printVehicle(ostream& os, VehicleType vehicleType, LicensePlate licensePlate, Time1 entranceTime);
 
         /**
          * @brief Prints the successful entry of a Vehicle into the ParkingLot
@@ -60,7 +60,7 @@ namespace ParkingLotUtils {
          * @param price The total price the vehicle has to pay (including fines)
          * @return ostream& output stream after the print
          */
-        static ostream& printExitSuccess(ostream& os, ParkingSpot parkingSpot, Time exitTime, unsigned int price);
+        static ostream& printExitSuccess(ostream& os, ParkingSpot parkingSpot, Time1 exitTime, unsigned int price);
 
         /**
          * @brief Prints unsuccessful exit of a Vehicle from the Parking lot
@@ -79,7 +79,7 @@ namespace ParkingLotUtils {
          * @param numFined Total number of vehicles fined during the inspection
          * @return ostream& output stream after the print
          */
-        static ostream& printInspectionResult(ostream& os, Time inspectionTime, unsigned int numFined);
+        static ostream& printInspectionResult(ostream& os, Time1 inspectionTime, unsigned int numFined);
 
         /**
          * @brief Prints the title for ParkingLot print operation

@@ -1,5 +1,5 @@
 #include "ParkingLotTypes.h"
-#include "Time.h"
+#include "Time1.h"
 #include "ParkingLotPrinter.h"
 #include "ParkingLot.h"
 
@@ -55,7 +55,7 @@ static VehicleType vehicleStrToVehicleType(string vehicleTypeStr) {
     return vehicleTypes.at(vehicleTypeStr);
 }
 
-static void processEnterCmd(istream& inputStream, ParkingLot& parkingLot, Time& currentTime) {
+static void processEnterCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
     LicensePlate inputLicensePlate;
     string inputVehicleStr;
     inputStream >> inputVehicleStr >> inputLicensePlate;
@@ -70,17 +70,17 @@ static void processEnterCmd(istream& inputStream, ParkingLot& parkingLot, Time& 
     }
 }
 
-static void processExitCmd(istream& inputStream, ParkingLot& parkingLot, Time& currentTime) {
+static void processExitCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
     LicensePlate inputLicensePlate;
     inputStream >> inputLicensePlate;
     parkingLot.exitParking(inputLicensePlate, currentTime);
 }
 
-static void processPrintCmd(istream& inputStream, ParkingLot& parkingLot, Time& currentTime) {
+static void processPrintCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
     cout << parkingLot;
 }
 
-static void processPassCmd(istream& inputStream, ParkingLot& parkingLot, Time& currentTime) {
+static void processPassCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
     int mins;
     inputStream >> mins;
     if (inputStream.fail() || mins < 0) {
@@ -91,12 +91,12 @@ static void processPassCmd(istream& inputStream, ParkingLot& parkingLot, Time& c
     cout << "Current time: " << currentTime << endl;
 }
 
-static void processInspectCmd(istream& inputStream, ParkingLot& parkingLot, Time& currentTime) {
+static void processInspectCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
     parkingLot.inspectParkingLot(currentTime);
 }
 
-static void processInput(istream& inputStream, ParkingLot& parkingLot, Time& currentTime) {
-    typedef void (*CmdFunction)(istream&, ParkingLot&, Time&);
+static void processInput(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
+    typedef void (*CmdFunction)(istream&, ParkingLot&, Time1&);
     static map<string, CmdFunction> cmdMap = {{"ENTER", processEnterCmd},
                                               {"EXIT", processExitCmd},
                                               {"PRINT", processPrintCmd},
@@ -142,7 +142,7 @@ int main(int argc, char* argv[]) {
     istream& inputStream = openInputStream(argc, argv);
     unsigned int parkingSizes[VehicleType::LAST-VehicleType::FIRST+1];
     getParkingSizes(inputStream, parkingSizes);
-    Time currentTime = Time();
+    Time1 currentTime = Time1();
     ParkingLot parkingLot(parkingSizes);
     processInput(inputStream, parkingLot, currentTime);
     closeInputStream(inputStream);

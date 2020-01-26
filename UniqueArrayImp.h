@@ -2,10 +2,11 @@
 #define UNIQUEARRAY_H_UNIQUEARRAYIMP_H
 
 
+
 template <class Element, class Compare>
     UniqueArray<Element, Compare>::UniqueArray(unsigned int size):
             maxSize(size), elementCounter(0)  {
-     arrayOfElements = new const Element*[maxSize];
+     arrayOfElements = new Element*[maxSize];
     for(unsigned int i = 0; i<size; i++){
         arrayOfElements[i] = NULL;
     }
@@ -25,8 +26,11 @@ UniqueArray<Element,Compare>::UniqueArray(const UniqueArray& other) :
 
 
 template <class Element, class Compare>
-unsigned int UniqueArray<Element,Compare>::insert(const Element& element) {
+unsigned int UniqueArray<Element,Compare>::insert(const  Element& element) {//const MtmParkingLot::ParkingLot::Motorbike
     unsigned int index=0;
+
+    const Element test = element;
+
 
     if (getIndex(element,index)) { /* If the element is in the array.*/
         return index;
@@ -59,6 +63,7 @@ template <class Element, class Compare>
         }
 
         else if(arrayOfElements[i]!=NULL) {
+            Compare cmp;
             if(cmp(*arrayOfElements[i], *elementPtr))
             {
                 index = i;
@@ -132,6 +137,15 @@ UniqueArray<Element,Compare> UniqueArray<Element,Compare>::filter(const Filter& 
 
 
     return newUniqueArray;
+}
+
+/* Gets an index and returns pointer to the element with the given index.*/
+template <class Element, class Compare>
+const Element* UniqueArray<Element, Compare>::getElement(unsigned int index) {
+	if (index >= maxSize) {
+		return NULL;
+	}
+	return arrayOfElements[index];
 }
 
 

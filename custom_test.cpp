@@ -1,27 +1,148 @@
-#include <cassert>
-#include <functional>
+#include "ParkingLotTypes.h"
+#include "Time1.h"
+#include "ParkingLotPrinter.h"
+#include "ParkingLot.h"
+
 #include <iostream>
-#include <cmath>
-#include "UniqueArray.h"
-using namespace std;
+#include <fstream>
+#include <string>
+#include <map>
+#include <limits>
+
+using std::istream;
+using std::ifstream;
+using std::string;
+using std::cout;
+using std::cin;
+using std::cerr;
+using std::endl;
+using std::map;
+
+using namespace ParkingLotUtils;
+using namespace MtmParkingLot;
+
+static istream& openInputStream(int argc, char* argv[]) {
+    if (argc == 2) {
+        try {
+            return *(new ifstream(argv[1]));
+        }
+        catch (const ifstream::failure& e) {
+            cerr << "Error reading input file!";
+            exit(1);
+        }
+    }
+    return cin;
+}
+
+static void closeInputStream(istream& is) {
+    if (&is == &cin) {
+        return;
+    }
+    static_cast<ifstream&>(is).close();
+    delete &is;
+}
+
+static void handleInputError(istream& inputStream, string errorMsg) {
+    cerr << "Error: " << errorMsg << endl;
+    inputStream.clear();
+    inputStream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+static VehicleType vehicleStrToVehicleType(string vehicleTypeStr) {
+    static map<string, VehicleType> vehicleTypes = { {"Motorbike", VehicleType::MOTORBIKE},
+                                                     {"Handicapped", VehicleType::HANDICAPPED},
+                                                     {"Car", VehicleType::CAR} };
+    return vehicleTypes.at(vehicleTypeStr);
+}
+
+static void processEnterCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
+    LicensePlate inputLicensePlate;
+    string inputVehicleStr;
+    inputStream >> inputVehicleStr >> inputLicensePlate;
+    if (inputStream.fail()) {
+        handleInputError(inputStream, "invalid input to ENTER command! Usage: ENTER <Vehicle Type> <licensePlate>");
+    }
+    try {
+        parkingLot.enterParking(vehicleStrToVehicleType(inputVehicleStr), inputLicensePlate, currentTime);
+    }
+    catch (std::exception& e) {
+        handleInputError(inputStream, "unrecognized vehicle!");
+    }
+}
+
+static void processExitCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
+    LicensePlate inputLicensePlate;
+    inputStream >> inputLicensePlate;
+    parkingLot.exitParking(inputLicensePlate, currentTime);
+}
 
 
-int main(){
-    unsigned int size =5;
-    UniqueArray<int> testArray2(size-2);
-    testArray2.insert(1);
-    testArray2.insert(2);
-    testArray2.insert(3);
 
-   // testArray.printArray();
-    //testArray2.printArray();
-    const unsigned int a=1;
-    const int* b = testArray2[a];
-    cout<<*b<<endl;
+static void processPassCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
+    int mins;
+    inputStream >> mins;
+    if (inputStream.fail() || mins < 0) {
+        handleInputError(inputStream, "invalid input to PASS_TIME command! Usage: PASS_TIME <# of mins>");
+        return;
+    }
+    currentTime += mins;
+    cout << "Current time: " << currentTime << endl;
+}
 
+static void processInspectCmd(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
+    parkingLot.inspectParkingLot(currentTime);
+}
 
+static void processInput(istream& inputStream, ParkingLot& parkingLot, Time1& currentTime) {
+    typedef void (*CmdFunction)(istream&, ParkingLot&, Time1&);
+    static map<string, CmdFunction> cmdMap = {{"ENTER", processEnterCmd},
+                                              {"EXIT", processExitCmd},
 
+                                              {"PASS_TIME", processPassCmd},
+                                              {"INSPECT", processInspectCmd}};
+    cout << "Enter commands:" << endl;
+    string cmd;
+    while (inputStream >> cmd) {
+        try {
+            CmdFunction cmdFunc = cmdMap.at(cmd);
+            cmdFunc(inputStream, parkingLot, currentTime);
+            inputStream.clear();
+            inputStream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        catch (std::out_of_range& e) {
+            handleInputError(inputStream, "unrecognized command!");
+        }
+    }
+}
 
+static void getParkingSizes(istream& inputStream, unsigned int parkingSizes[]) {
+    int i = 0;
+    while( i < VehicleType::LAST - VehicleType::FIRST + 1) {
+        VehicleType vehicleType = static_cast<VehicleType>(i);
+        cout << "Enter parking size for " << vehicleTypeToString(vehicleType) << ":" << endl;
+        int inputNum;
+        inputStream >> inputNum;
+        if (inputStream.fail() || inputNum < 0) {
+            handleInputError(inputStream, "Invalid size!");
+        }
+        else {
+            parkingSizes[i] = inputNum;
+            i++;
+        }
+    }
+}
+
+int main(int argc, char* argv[]) {
+    if (argc != 1 && argc != 2) {
+        cout << "Usage: " << argv[0] << " [inputFile]" << endl;
+        return 1;
+    }
+    istream& inputStream = openInputStream(argc, argv);
+    unsigned int parkingSizes[VehicleType::LAST-VehicleType::FIRST+1];
+    getParkingSizes(inputStream, parkingSizes);
+    Time1 currentTime = Time1();
+    ParkingLot parkingLot(parkingSizes);
+    processInput(inputStream, parkingLot, currentTime);
+    closeInputStream(inputStream);
     return 0;
-
 }
